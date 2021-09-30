@@ -114,18 +114,22 @@ app.get('/profile/:id', (req, res) => {
 
 app.put('/image', (req, res) => {
   const { id } = req.body;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.id === id) {
-      found = true;
-      user.entries++
-      return res.json(user.entries)
-    }
-  })
 
-  if (!found) {
-    res.status(404).json("Nopp")
-  }
+  db('users')
+    .where('id', '=', id)
+    .increment('entries', 1)
+    .returning('entries')
+    .then(entries => {
+      res.json({
+        data: {
+          sucess: entries[0]
+        }
+      });
+    })
+    .catch(err => {
+      res.status(400).json({ data: { err: 'not updating image' } })
+    })
+
 })
 
 app.listen(3001, () => [
