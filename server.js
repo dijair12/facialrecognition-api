@@ -31,7 +31,7 @@ app.use(express.urlencoded({
 }));
 
 app.get('/', (req, res) => {
-  res.json(db.users)
+  res.send(db.users)
 })
 
 app.post('/signin', (req, res) => { signin.handleSignin(req, res, db, bcrypt) })
